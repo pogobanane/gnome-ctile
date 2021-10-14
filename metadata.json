@@ -1,0 +1,11 @@
+{
+  "uuid": "tactile@lundal.io",
+  "name": "Tactile",
+  "description": "Tile windows on a grid using your keyboard",
+  "url": "https://gitlab.com/lundal/tactile",
+  "settings-schema": "org.gnome.shell.extensions.tactile",
+  "version": 1,
+  "shell-version": [
+    "40.0"
+  ]
+}
