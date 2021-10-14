@@ -84,7 +84,7 @@ class Extension {
                 }
                 const tile = {key: `tile-${col}-${row}`, col: col, row: row};
                 const area = this.calculateArea(this._workarea, this._layout, tile, tile);
-                const name = this._settings.get_strv(tile.key)[0] || "";
+                const name = this._settings.get_strv(tile.key)[0] || '';
                 this._tiles.push({...tile, actor: new Tile(area, name)});
             });
         });
