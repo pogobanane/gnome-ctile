@@ -10,34 +10,49 @@ function init() {
 function buildPrefsWidget() {
     const settings = ExtensionUtils.getSettings();
 
-    const prefs = new Gtk.Grid({
+    const grid = new Gtk.Grid({
         margin_start: 12,
         margin_end: 12,
         margin_top: 12,
         margin_bottom: 12,
         column_spacing: 12,
-        row_spacing: 12,
-        visible: true
+        row_spacing: 12
     });
 
+    // Col weights
     for (let col = 0; col < 4; col++) {
         const widget = buildNumberWidget(settings, `col-${col}`)
-        prefs.attach(widget, col + 1, 0, 1, 1);
+        grid.attach(widget, col + 1, 0, 1, 1);
     }
 
+    // Row weights
     for (let row = 0; row < 3; row++) {
         const widget = buildNumberWidget(settings, `row-${row}`)
-        prefs.attach(widget, 0, row + 1, 1, 1);
+        grid.attach(widget, 0, row + 1, 1, 1);
     }
 
+    // Tile hotkeys
     for (let col = 0; col < 4; col++) {
         for (let row = 0; row < 3; row++) {
-            const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`);
-            prefs.attach(widget, col + 1, row + 1, 1, 1);
+            const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`, () => deselectOthers(grid, widget));
+            grid.attach(widget, col + 1, row + 1, 1, 1);
         }
     }
 
-    return prefs;
+    return grid;
+}
+
+// TreeViews keep their selection when they loose focus
+// This prevents more than one from being selected
+function deselectOthers(grid, widget) {
+    for (let col = 0; col < 4; col++) {
+        for (let row = 0; row < 3; row++) {
+            const child = grid.get_child_at(col + 1, row + 1);
+            if (child !== widget) {
+                child.get_selection().unselect_all();
+            }
+        }
+    }
 }
 
 function buildNumberWidget(settings, id) {
@@ -52,7 +67,9 @@ function buildNumberWidget(settings, id) {
     return spin;
 }
 
-function buildAcceleratorWidget(settings, id) {
+// The only widget for capturing accelerators is CellRendererAccel
+// It must be embedded in a TreeView, which adds a lot of complexity
+function buildAcceleratorWidget(settings, id, onSelect) {
     // Model
     const model = new Gtk.ListStore();
     model.set_column_types([GObject.TYPE_INT, GObject.TYPE_INT]);
@@ -93,8 +110,10 @@ function buildAcceleratorWidget(settings, id) {
         headers_visible: false
     });
     view.append_column(column);
-    view.get_selection().connect('changed', function () {
-        log(`Selected ${id}`) // TODO: Deselect others
+    view.get_selection().connect('changed', function (selection) {
+        if (selection.count_selected_rows() > 0) {
+            onSelect();
+        }
     });
 
     return view;
