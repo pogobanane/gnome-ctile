@@ -61,5 +61,35 @@
             <default><![CDATA[['v']]]></default>
             <summary>Tile 3:2</summary>
         </key>
+        <!-- Column weights -->
+        <key name="col-0" type="i">
+            <default>1</default>
+            <summary>Column 0</summary>
+        </key>
+        <key name="col-1" type="i">
+            <default>1</default>
+            <summary>Column 1</summary>
+        </key>
+        <key name="col-2" type="i">
+            <default>1</default>
+            <summary>Column 2</summary>
+        </key>
+        <key name="col-3" type="i">
+            <default>1</default>
+            <summary>Column 3</summary>
+        </key>
+        <!-- Row weights -->
+        <key name="row-0" type="i">
+            <default>1</default>
+            <summary>Row 0</summary>
+        </key>
+        <key name="row-1" type="i">
+            <default>1</default>
+            <summary>Row 1</summary>
+        </key>
+        <key name="row-2" type="i">
+            <default>0</default>
+            <summary>Row 2</summary>
+        </key>
     </schema>
 </schemalist>

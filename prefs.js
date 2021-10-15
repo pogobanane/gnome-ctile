@@ -1,4 +1,4 @@
-const {GObject, Gtk} = imports.gi;
+const {Gio, GObject, Gtk} = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 
 const COLUMN_KEY = 0;
@@ -11,19 +11,45 @@ function buildPrefsWidget() {
     const settings = ExtensionUtils.getSettings();
 
     const prefs = new Gtk.Grid({
+        margin_start: 12,
+        margin_end: 12,
+        margin_top: 12,
+        margin_bottom: 12,
         column_spacing: 12,
         row_spacing: 12,
         visible: true
     });
 
     for (let col = 0; col < 4; col++) {
+        const widget = buildNumberWidget(settings, `col-${col}`)
+        prefs.attach(widget, col + 1, 0, 1, 1);
+    }
+
+    for (let row = 0; row < 3; row++) {
+        const widget = buildNumberWidget(settings, `row-${row}`)
+        prefs.attach(widget, 0, row + 1, 1, 1);
+    }
+
+    for (let col = 0; col < 4; col++) {
         for (let row = 0; row < 3; row++) {
             const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`);
-            prefs.attach(widget, col, row, 1, 1);
+            prefs.attach(widget, col + 1, row + 1, 1, 1);
         }
     }
 
     return prefs;
+}
+
+function buildNumberWidget(settings, id) {
+    const spin = new Gtk.SpinButton({
+        adjustment: new Gtk.Adjustment({
+            lower: 0,
+            upper: 1000,
+            step_increment: 1
+        })
+    });
+    settings.bind(id, spin, 'value', Gio.SettingsBindFlags.DEFAULT);
+    return spin;
 }
 
 function buildAcceleratorWidget(settings, id) {
@@ -35,6 +61,7 @@ function buildAcceleratorWidget(settings, id) {
     // Renderer
     const renderer = new Gtk.CellRendererAccel({
         accel_mode: Gtk.CellRendererAccelMode.GTK,
+        height: 34,
         editable: true
     });
     renderer.connect('accel-edited', function (renderer, path, key, mods) {

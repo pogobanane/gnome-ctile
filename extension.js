@@ -30,10 +30,7 @@ class Extension {
         this._tiles = [];
         this._window = null;
         this._workarea = null;
-        this._layout = {
-            cols: [5, 3, 3, 5],
-            rows: [1, 1, 0]
-        };
+        this._layout = {cols: [], rows: []};
     }
 
     enable() {
@@ -58,6 +55,19 @@ class Extension {
         Main.wm.removeKeybinding(key);
     }
 
+    loadLayout(settings) {
+        const cols = [], rows = [];
+
+        for (let col = 0; col < 4; col++) {
+            cols.push(settings.get_int(`col-${col}`));
+        }
+        for (let row = 0; row < 3; row++) {
+            rows.push(settings.get_int(`row-${row}`));
+        }
+
+        return {cols: cols, rows: rows};
+    }
+
     showTiles() {
         // Check if tiles are already shown
         if (this._tiles.length > 0) {
@@ -75,6 +85,9 @@ class Extension {
         // Save window
         this._window = activeWindow;
         this._workarea = activeWindow.get_work_area_current_monitor();
+
+        // Load layout
+        this._layout = this.loadLayout(this._settings);
 
         // Create tiles
         this._layout.cols.forEach((col_weight, col) => {
