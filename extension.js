@@ -29,30 +29,95 @@ class Extension {
         this._settings = ExtensionUtils.getSettings();
         this._tiles = [];
         this._window = null;
-        this._workarea = null;
-        this._layout = {cols: [], rows: []};
+        this._tile = null;
+        this._date = null;
     }
 
     enable() {
-        this.bindKey('show-tiles', () => this.showTiles());
+        this.bindKey('show-tiles', () => this.onShowTiles());
     }
 
     disable() {
         this.unbindKey('show-tiles');
+
+        // Just in case
+        this.discardTiles();
     }
 
     bindKey(key, callback) {
-        Main.wm.addKeybinding(
-            key,
-            this._settings,
-            Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
-            Shell.ActionMode.NORMAL,
-            callback
-        );
+        Main.wm.addKeybinding(key, this._settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, Shell.ActionMode.NORMAL, callback);
     }
 
     unbindKey(key) {
         Main.wm.removeKeybinding(key);
+    }
+
+    onShowTiles() {
+        if (this._tiles.length > 0) {
+            this.discardTiles();
+            this.unbindKey('hide-tiles');
+        } else {
+            this.displayTiles();
+            this.bindKey('hide-tiles', () => this.onHideTiles());
+        }
+    }
+
+    onHideTiles() {
+        if (this._tiles.length > 0) {
+            this.discardTiles();
+            this.unbindKey('hide-tiles');
+        }
+    }
+
+    onActivateTile(tile) {
+        const lastTile = this._tile;
+        const lastDate = this._date;
+
+        // Assume this is the first tile if more than one second of inactivity
+        if (lastDate == null || lastDate + 1000 < Date.now()) {
+            this._tile = tile;
+            this._date = Date.now();
+            return;
+        }
+        // Once two tiles are activated, move the window
+        this.moveWindow(this._window, this.combineAreas(lastTile.area, tile.area));
+        this.discardTiles();
+
+        this._tile = null;
+        this._date = null;
+    }
+
+    displayTiles() {
+        // Find active window
+        const activeWindow = this.getActiveWindow()
+        if (!activeWindow) {
+            log('No active window')
+            return;
+        }
+        this._window = activeWindow;
+
+        // Create tiles
+        const workarea = activeWindow.get_work_area_current_monitor();
+        const layout = this.loadLayout(this._settings);
+        this._tiles = this.createTiles(workarea, layout)
+
+        // Display and bind keys
+        this._tiles.forEach(tile => {
+            Main.uiGroup.add_actor(tile.actor);
+            this.bindKey(tile.id, () => this.onActivateTile(tile));
+        });
+    }
+
+    discardTiles() {
+        // Discard and unbind keys
+        this._tiles.forEach(tile => {
+            Main.uiGroup.remove_actor(tile.actor)
+            this.unbindKey(tile.id);
+        });
+
+        // Clear tiles and active window
+        this._tiles = [];
+        this._window = null;
     }
 
     loadLayout(settings) {
@@ -68,106 +133,48 @@ class Extension {
         return {cols: cols, rows: rows};
     }
 
-    showTiles() {
-        // Check if tiles are already shown
-        if (this._tiles.length > 0) {
-            this.hideTiles();
-            return;
-        }
+    createTiles(workarea, layout) {
+        const tiles = [];
 
-        // Find active window
-        const activeWindow = this.getActiveWindow()
-        if (!activeWindow) {
-            log('No active window')
-            return;
-        }
-
-        // Save window
-        this._window = activeWindow;
-        this._workarea = activeWindow.get_work_area_current_monitor();
-
-        // Load layout
-        this._layout = this.loadLayout(this._settings);
-
-        // Create tiles
-        this._layout.cols.forEach((col_weight, col) => {
-            this._layout.rows.forEach((row_weight, row) => {
+        layout.cols.forEach((col_weight, col) => {
+            layout.rows.forEach((row_weight, row) => {
                 if (col_weight < 1 || row_weight < 1) {
                     return;
                 }
-                const tile = {key: `tile-${col}-${row}`, col: col, row: row};
-                const area = this.calculateArea(this._workarea, this._layout, tile, tile);
-                const name = this._settings.get_strv(tile.key)[0] || '';
-                this._tiles.push({...tile, actor: new Tile(area, name)});
+                const id = `tile-${col}-${row}`;
+                const name = this._settings.get_strv(id)[0] || '';
+                const area = this.calculateArea(workarea, layout, col, row);
+                const tile = {id: id, area: area, actor: new Tile(area, name)};
+                tiles.push(tile);
             });
         });
-        this._tiles.forEach(tile => Main.uiGroup.add_actor(tile.actor))
 
-        // Bind keys
-        this._tiles.forEach(tile => {
-            this.bindKey(tile.key, () => this.onTileActivated(tile));
-        });
-        this.bindKey('hide-tiles', () => this.hideTiles());
+        return tiles;
     }
 
-    hideTiles() {
-        // Check if tiles are already hidden
-        if (this._tiles.length < 1) {
-            return;
-        }
-
-        // Unbind keys
-        this.unbindKey('hide-tiles');
-        this._tiles.forEach(tile => {
-            this.unbindKey(tile.key);
-        })
-
-        // Remove tiles
-        this._tiles.forEach(tile => Main.uiGroup.remove_actor(tile.actor))
-        this._tiles = [];
-
-        // Discard window
-        this._window = null;
-        this._workarea = null;
+    calculateArea(workarea, layout, col, row) {
+        const colStart = Math.floor(workarea.x + workarea.width * this.sumUntil(layout.cols, col) / this.sumAll(layout.cols));
+        const rowStart = Math.floor(workarea.y + workarea.height * this.sumUntil(layout.rows, row) / this.sumAll(layout.rows));
+        const colEnd = Math.floor(workarea.x + workarea.width * this.sumUntil(layout.cols, col + 1) / this.sumAll(layout.cols));
+        const rowEnd = Math.floor(workarea.y + workarea.height * this.sumUntil(layout.rows, row + 1) / this.sumAll(layout.rows));
+        return {x: colStart, y: rowStart, width: colEnd - colStart, height: rowEnd - rowStart}
     }
 
-    onTileActivated(tile) {
-        let lastTile = this._tile;
-        let lastDate = this._date;
-        if (lastTile == null || (lastDate != null && lastDate + 1000 < Date.now())) {
-            this._tile = tile;
-            this._date = Date.now();
-            return;
-        }
-        this._tile = null;
-        this._date = null;
-
-        log('Moving active window to area ' + lastTile.key + ',' + tile.key)
-        this.moveWindow(this._window, this.calculateArea(this._workarea, this._layout, lastTile, tile));
-        this.hideTiles();
-    }
-
-    calculateArea(workarea, layout, tile1, tile2) {
-        const colStart = Math.floor(workarea.x + workarea.width * this.sumUntil(layout.cols, Math.min(tile1.col, tile2.col)) / this.sumAll(layout.cols));
-        const rowStart = Math.floor(workarea.y + workarea.height * this.sumUntil(layout.rows, Math.min(tile1.row, tile2.row)) / this.sumAll(layout.rows));
-        const colEnd = Math.floor(workarea.x + workarea.width * this.sumUntil(layout.cols, Math.max(tile1.col, tile2.col) + 1) / this.sumAll(layout.cols));
-        const rowEnd = Math.floor(workarea.y + workarea.height * this.sumUntil(layout.rows, Math.max(tile1.row, tile2.row) + 1) / this.sumAll(layout.rows));
+    combineAreas(area1, area2) {
+        const colStart = Math.min(area1.x, area2.x);
+        const rowStart = Math.min(area1.y, area2.y);
+        const colEnd = Math.max(area1.x + area1.width, area2.x + area2.width);
+        const rowEnd = Math.max(area1.y + area1.height, area2.y + area2.height);
         return {x: colStart, y: rowStart, width: colEnd - colStart, height: rowEnd - rowStart}
     }
 
     moveWindow(window, area) {
         if (!window) {
-            log('Window disappeared');
             return;
         }
-
-        log('Moving window: ' + window.get_title());
-
         if (window.maximized_horizontally || window.maximized_vertically) {
             window.unmaximize(Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
         }
-
-        //window.move_frame(true, area.x, area.y);
         window.move_resize_frame(true, area.x, area.y, area.width, area.height);
     }
 
@@ -179,15 +186,11 @@ class Extension {
     }
 
     sumUntil(list, index) {
-        let sum = 0;
-        for (let i = 0; i < index; i++) {
-            sum += list[i]
-        }
-        return sum;
+        return list.reduce((prev, curr, i) => i < index ? prev + curr : prev, 0);
     }
 
     sumAll(list) {
-        return list.reduce((a, b) => a + b, 0);
+        return list.reduce((prev, curr) => prev + curr, 0);
     }
 }
 
