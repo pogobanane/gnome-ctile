@@ -1,4 +1,4 @@
-.PHONY: build clean wayland
+.PHONY: build clean test-wayland follow-log
 
 zip = tactile@lundal.io.zip
 schema = schemas/gschemas.compiled
@@ -14,5 +14,8 @@ $(zip): *.json *.js *.css schemas/*.xml $(schema)
 $(schema): schemas/*.xml
 	glib-compile-schemas --strict schemas
 
-wayland:
+test-wayland:
 	dbus-run-session -- gnome-shell --nested --wayland
+
+follow-log:
+	journalctl -f /usr/bin/gnome-shell
