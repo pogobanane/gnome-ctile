@@ -40,7 +40,7 @@ class Extension {
     disable() {
         this.unbindKey('show-tiles');
 
-        // Just in case
+        // In case the extension is disabled while tiles are shown
         this.discardTiles();
     }
 
