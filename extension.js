@@ -26,7 +26,7 @@ const Tile = GObject.registerClass(
 
 class Extension {
     constructor() {
-        this._settings = ExtensionUtils.getSettings();
+        this._settings = null;
         this._tiles = [];
         this._window = null;
         this._tile = null;
@@ -34,14 +34,16 @@ class Extension {
     }
 
     enable() {
+        this._settings = ExtensionUtils.getSettings();
         this.bindKey('show-tiles', () => this.onShowTiles());
     }
 
     disable() {
-        this.unbindKey('show-tiles');
-
         // In case the extension is disabled while tiles are shown
         this.discardTiles();
+
+        this.unbindKey('show-tiles');
+        this._settings = null;
     }
 
     bindKey(key, callback) {
