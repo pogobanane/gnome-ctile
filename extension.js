@@ -89,9 +89,9 @@ class Extension {
 
     displayTiles() {
         // Find active window
-        const activeWindow = this.getActiveWindow()
+        const activeWindow = this.getActiveWindow();
         if (!activeWindow) {
-            log('No active window')
+            log('No active window');
             return;
         }
         this._window = activeWindow;
@@ -99,7 +99,7 @@ class Extension {
         // Create tiles
         const workarea = activeWindow.get_work_area_current_monitor();
         const layout = this.loadLayout(this._settings);
-        this._tiles = this.createTiles(workarea, layout)
+        this._tiles = this.createTiles(workarea, layout);
 
         // Display and bind keys
         this._tiles.forEach(tile => {
@@ -158,7 +158,7 @@ class Extension {
         const rowStart = Math.floor(workarea.y + workarea.height * this.sumUntil(layout.rows, row) / this.sumAll(layout.rows));
         const colEnd = Math.floor(workarea.x + workarea.width * this.sumUntil(layout.cols, col + 1) / this.sumAll(layout.cols));
         const rowEnd = Math.floor(workarea.y + workarea.height * this.sumUntil(layout.rows, row + 1) / this.sumAll(layout.rows));
-        return {x: colStart, y: rowStart, width: colEnd - colStart, height: rowEnd - rowStart}
+        return {x: colStart, y: rowStart, width: colEnd - colStart, height: rowEnd - rowStart};
     }
 
     combineAreas(area1, area2) {
@@ -166,7 +166,7 @@ class Extension {
         const rowStart = Math.min(area1.y, area2.y);
         const colEnd = Math.max(area1.x + area1.width, area2.x + area2.width);
         const rowEnd = Math.max(area1.y + area1.height, area2.y + area2.height);
-        return {x: colStart, y: rowStart, width: colEnd - colStart, height: rowEnd - rowStart}
+        return {x: colStart, y: rowStart, width: colEnd - colStart, height: rowEnd - rowStart};
     }
 
     moveWindow(window, area) {
