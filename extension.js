@@ -111,8 +111,9 @@ class Extension {
     discardTiles() {
         // Discard and unbind keys
         this._tiles.forEach(tile => {
-            Main.uiGroup.remove_actor(tile.actor)
             this.unbindKey(tile.id);
+            Main.uiGroup.remove_actor(tile.actor);
+            tile.actor.destroy();
         });
 
         // Clear tiles and active window
