@@ -40,7 +40,7 @@ class Extension {
 
     disable() {
         // In case the extension is disabled while tiles are shown
-        this.discardTiles();
+        this.onHideTiles();
 
         this.unbindKey('show-tiles');
         this._settings = null;
@@ -57,17 +57,14 @@ class Extension {
     onShowTiles() {
         if (this._tiles.length > 0) {
             this.discardTiles();
-            this.unbindKey('hide-tiles');
         } else {
             this.displayTiles();
-            this.bindKey('hide-tiles', () => this.onHideTiles());
         }
     }
 
     onHideTiles() {
         if (this._tiles.length > 0) {
             this.discardTiles();
-            this.unbindKey('hide-tiles');
         }
     }
 
@@ -83,7 +80,7 @@ class Extension {
         }
         // Once two tiles are activated, move the window
         this.moveWindow(this._window, this.combineAreas(lastTile.area, tile.area));
-        this.onHideTiles();
+        this.discardTiles();
 
         this._tile = null;
         this._date = null;
@@ -108,9 +105,15 @@ class Extension {
             Main.uiGroup.add_actor(tile.actor);
             this.bindKey(tile.id, () => this.onActivateTile(tile));
         });
+
+        // Bind hide key
+        this.bindKey('hide-tiles', () => this.onHideTiles());
     }
 
     discardTiles() {
+        // Unbind hide key
+        this.unbindKey('hide-tiles');
+
         // Discard and unbind keys
         this._tiles.forEach(tile => {
             this.unbindKey(tile.id);
