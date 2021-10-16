@@ -8,7 +8,7 @@ build: $(zip)
 clean:
 	rm -f $(zip) $(schema)
 
-$(zip): *.json *.js *.css schemas/*.xml $(schema)
+$(zip): *.json *.js *.css $(schema)
 	zip - $^ > $@
 
 $(schema): schemas/*.xml
