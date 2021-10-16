@@ -83,7 +83,7 @@ class Extension {
         }
         // Once two tiles are activated, move the window
         this.moveWindow(this._window, this.combineAreas(lastTile.area, tile.area));
-        this.discardTiles();
+        this.onHideTiles();
 
         this._tile = null;
         this._date = null;
