@@ -6,6 +6,10 @@
   "settings-schema": "org.gnome.shell.extensions.tactile",
   "version": 3,
   "shell-version": [
-    "40"
+    "40",
+    "3.38",
+    "3.36",
+    "3.34",
+    "3.32"
   ]
 }

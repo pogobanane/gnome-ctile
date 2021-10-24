@@ -16,7 +16,8 @@ function buildPrefsWidget() {
         margin_top: 12,
         margin_bottom: 12,
         column_spacing: 12,
-        row_spacing: 12
+        row_spacing: 12,
+        visible: true
     });
 
     // Col weights
@@ -61,7 +62,8 @@ function buildNumberWidget(settings, id) {
             lower: 0,
             upper: 1000,
             step_increment: 1
-        })
+        }),
+        visible: true
     });
     settings.bind(id, spin, 'value', Gio.SettingsBindFlags.DEFAULT);
     return spin;
@@ -107,7 +109,8 @@ function buildAcceleratorWidget(settings, id, onSelect) {
     // TreeView
     const view = new Gtk.TreeView({
         model: model,
-        headers_visible: false
+        headers_visible: false,
+        visible: true
     });
     view.append_column(column);
     view.get_selection().connect('changed', function (selection) {
@@ -122,5 +125,9 @@ function buildAcceleratorWidget(settings, id, onSelect) {
 function parseAccelerator(settings, id) {
     const accelerator = settings.get_strv(id)[0] || '';
     const [ok, key, mods] = Gtk.accelerator_parse(accelerator);
+    // Gtk3 compatibility
+    if (typeof ok == "number") {
+        return [ok, key];
+    }
     return [key, mods];
 }
