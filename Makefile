@@ -5,6 +5,9 @@ schema = schemas/gschemas.compiled
 
 build: $(zip)
 
+install: $(zip)
+	unzip -o $(zip) -d ~/.local/share/gnome-shell/extensions/tactile@lundal.io/
+
 clean:
 	rm -f $(zip) $(schema)
 
