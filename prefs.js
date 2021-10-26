@@ -72,7 +72,7 @@ function buildTileConfigWidget(settings, allTreeViews) {
     // Tile hotkeys
     for (let col = 0; col < 4; col++) {
         for (let row = 0; row < 3; row++) {
-            const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`, 34, allTreeViews);
+            const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`, 124, 34, allTreeViews);
             grid.attach(widget, col + 1, row + 1, 1, 1);
         }
     }
@@ -96,7 +96,7 @@ function buildKeyboardShortcutsWidget(settings, allTreeViews) {
         });
         grid.attach(label, 0, index, 1, 1);
 
-        const accelerator = buildAcceleratorWidget(settings, shortcut.id, 26, allTreeViews);
+        const accelerator = buildAcceleratorWidget(settings, shortcut.id, 124, 26, allTreeViews);
         grid.attach(accelerator, 1, index, 1, 1);
     });
 
@@ -118,7 +118,7 @@ function buildNumberWidget(settings, id) {
 
 // The only widget for capturing accelerators is CellRendererAccel
 // It must be embedded in a TreeView, which adds a lot of complexity
-function buildAcceleratorWidget(settings, id, height, allTreeViews) {
+function buildAcceleratorWidget(settings, id, width, height, allTreeViews) {
     // Model
     const model = new Gtk.ListStore();
     model.set_column_types([GObject.TYPE_INT, GObject.TYPE_INT]);
@@ -127,6 +127,7 @@ function buildAcceleratorWidget(settings, id, height, allTreeViews) {
     // Renderer
     const renderer = new Gtk.CellRendererAccel({
         accel_mode: Gtk.CellRendererAccelMode.GTK,
+        width: width,
         height: height,
         editable: true
     });
