@@ -10,6 +10,14 @@
             <default><![CDATA[['Escape']]]></default>
             <summary>Hide tiles</summary>
         </key>
+        <key name="next-monitor" type="as">
+            <default><![CDATA[['space']]]></default>
+            <summary>Move tiles to next monitor</summary>
+        </key>
+        <key name="prev-monitor" type="as">
+            <default><![CDATA[['<Shift>space']]]></default>
+            <summary>Move tiles to previous monitor</summary>
+        </key>
         <!-- Top row -->
         <key name="tile-0-0" type="as">
             <default><![CDATA[['q']]]></default>

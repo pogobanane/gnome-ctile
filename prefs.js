@@ -7,6 +7,8 @@ const COLUMN_MODS = 1;
 const KEYBOARD_SHORTCUTS = [
     {id: 'show-tiles', desc: 'Show tiles'},
     {id: 'hide-tiles', desc: 'Hide tiles'},
+    {id: 'next-monitor', desc: 'Move tiles to next monitor'},
+    {id: 'prev-monitor', desc: 'Move tiles to previous monitor'},
 ];
 
 function init() {

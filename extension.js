@@ -29,6 +29,7 @@ class Extension {
         this._settings = null;
         this._tiles = [];
         this._window = null;
+        this._monitor = null;
         this._tile = null;
         this._date = null;
     }
@@ -58,7 +59,7 @@ class Extension {
         if (this._tiles.length > 0) {
             this.discardTiles();
         } else {
-            this.displayTiles();
+            this.displayTiles(null);
         }
     }
 
@@ -86,7 +87,23 @@ class Extension {
         this._date = null;
     }
 
-    displayTiles() {
+    onNextMonitor() {
+        if (this._monitor != null) {
+            const nextMonitor = (this._monitor + 1) % this.getNumMonitors();
+            this.discardTiles();
+            this.displayTiles(nextMonitor);
+        }
+    }
+
+    onPrevMonitor() {
+        if (this._monitor != null) {
+            const prevMonitor = (this._monitor - 1 + this.getNumMonitors()) % this.getNumMonitors();
+            this.discardTiles();
+            this.displayTiles(prevMonitor);
+        }
+    }
+
+    displayTiles(monitor) {
         // Find active window
         const activeWindow = this.getActiveWindow();
         if (!activeWindow) {
@@ -94,9 +111,10 @@ class Extension {
             return;
         }
         this._window = activeWindow;
+        this._monitor = monitor != null ? monitor : activeWindow.get_monitor();
 
         // Create tiles
-        const workarea = activeWindow.get_work_area_current_monitor();
+        const workarea = this.getWorkAreaForMonitor(this._monitor);
         const layout = this.loadLayout(this._settings);
         this._tiles = this.createTiles(workarea, layout);
 
@@ -106,12 +124,16 @@ class Extension {
             this.bindKey(tile.id, () => this.onActivateTile(tile));
         });
 
-        // Bind hide key
+        // Bind keys
         this.bindKey('hide-tiles', () => this.onHideTiles());
+        this.bindKey('next-monitor', () => this.onNextMonitor());
+        this.bindKey('prev-monitor', () => this.onPrevMonitor());
     }
 
     discardTiles() {
-        // Unbind hide key
+        // Unbind keys
+        this.unbindKey('prev-monitor');
+        this.unbindKey('next-monitor');
         this.unbindKey('hide-tiles');
 
         // Discard and unbind keys
@@ -123,6 +145,7 @@ class Extension {
 
         // Clear tiles and active window
         this._tiles = [];
+        this._monitor = null;
         this._window = null;
     }
 
@@ -182,6 +205,19 @@ class Extension {
             window.unmaximize(Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
         }
         window.move_resize_frame(true, area.x, area.y, area.width, area.height);
+    }
+
+    getNumMonitors() {
+        return global.workspace_manager
+            .get_active_workspace()
+            .get_display()
+            .get_n_monitors();
+    }
+
+    getWorkAreaForMonitor(monitor) {
+        return global.workspace_manager
+            .get_active_workspace()
+            .get_work_area_for_monitor(monitor);
     }
 
     getActiveWindow() {
