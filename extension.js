@@ -205,6 +205,9 @@ class Extension {
             window.unmaximize(Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
         }
         window.move_resize_frame(true, area.x, area.y, area.width, area.height);
+        // In some cases move_resize_frame() will resize but not move the window, so we need to move it again.
+        // This usually happens when the window's minimum size is larger than the selected area.
+        window.move_frame(true, area.x, area.y);
     }
 
     getNumMonitors() {
