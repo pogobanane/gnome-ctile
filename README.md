@@ -10,6 +10,12 @@ A window tiling extension for GNOME Shell.
 
 https://extensions.gnome.org/extension/4548/tactile/
 
+## Examples
+
+![Animation of a window being moved to various positions with Tactile](examples/tactile.gif)
+
+![Picture of a windows tiled with Tactile](examples/tactile.png)
+
 ## License
 
 Tactile is distributed under the terms of the GNU General Public License v3.0 or later.
