@@ -1,6 +1,8 @@
 const {Clutter, GObject, Meta, Shell, St} = imports.gi;
-const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+const farey_sequence = Me.imports.farey_sequence;
+const Main = imports.ui.main;
 
 const Tile = GObject.registerClass(
     class Tile extends St.BoxLayout {
@@ -32,6 +34,8 @@ class Extension {
         this._monitor = null;
         this._tile = null;
         this._date = null;
+
+	this._counter = 1;
     }
 
     enable() {
@@ -55,7 +59,36 @@ class Extension {
         Main.wm.removeKeybinding(key);
     }
 
+    doSmth() {
+	let activeWindow = this.getActiveWindow();
+        if (!activeWindow) {
+            log('No active window');
+            return;
+        }
+
+        const monitor = activeWindow.get_monitor();
+        const workarea = this.getWorkAreaForMonitor(monitor);
+	const cols = 3;
+	this._counter = (this._counter + 1) % (cols + 1); // cycle [1..max] cols
+	const factor = farey_sequence.farey_indexed(cols, this._counter);
+	let area = { 
+	    x: workarea.x, 
+	    y: workarea.y, 
+	    width: Math.floor(workarea.width * factor), 
+	    height: workarea.height
+	};
+	log(factor);
+	log(workarea.x);
+	log(workarea.y);
+	log(workarea.width * factor);
+	log(workarea.height);
+	this.moveWindow(activeWindow, area);
+    }
+
     onShowTiles() {
+	log("onShowTiles()");
+	this.doSmth();
+	return;
         if (this._tiles.length > 0) {
             this.discardTiles();
         } else {
@@ -240,5 +273,7 @@ class Extension {
 }
 
 function init() {
+    log("FOOBAR");
+    log(farey_sequence.farey_indexed(3, 2));
     return new Extension();
 }

@@ -1,4 +1,5 @@
 { stdenv, lib, fetchFromGitHub, glib, gnome, zip, unzip }:
+# install this locally: ln -s ~/dev/tiling/gnome-ctile/result/share/gnome-shell/extensions/ctile@lundal.io ~/.local/share/gnome-shell/extensions/ctile@lundal.io
 
 stdenv.mkDerivation rec {
   pname = "gnome-shell-extension-ctile";
