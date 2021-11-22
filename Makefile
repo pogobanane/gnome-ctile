@@ -1,12 +1,12 @@
 .PHONY: build clean test-wayland follow-log
 
-zip = tactile@lundal.io.zip
+zip = ctile@lundal.io.zip
 schema = schemas/gschemas.compiled
 
 build: $(zip)
 
 install: $(zip)
-	unzip -o $(zip) -d ~/.local/share/gnome-shell/extensions/tactile@lundal.io/
+	unzip -o $(zip) -d ~/.local/share/gnome-shell/extensions/ctile@lundal.io/
 
 clean:
 	rm -f $(zip) $(schema)

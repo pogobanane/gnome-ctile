@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <schemalist>
-    <schema id="org.gnome.shell.extensions.tactile" path="/org/gnome/shell/extensions/tactile/">
+    <schema id="org.gnome.shell.extensions.ctile" path="/org/gnome/shell/extensions/ctile/">
         <!-- Show/hide -->
         <key name="show-tiles" type="as">
             <default><![CDATA[['<Super>t']]]></default>
