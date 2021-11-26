@@ -175,8 +175,9 @@ class Extension {
         this.bindKey('show-tiles', () => this.onShowTiles());
         this.bindKey('ctile-left', () => this.tile_direction(-1, 0));
         this.bindKey('ctile-right', () => this.tile_direction(1, 0));
-        this.bindKey('ctile-up', () => this.tile_direction(0, 1));
+	this.bindKey('ctile-up', () => this.tile_direction(0, 1));
         this.bindKey('ctile-down', () => this.tile_direction(0, -1));
+        this.bindKey('ctile-switch-monitor', () => this.cycle_monitors());
     }
 
     disable() {
@@ -188,6 +189,7 @@ class Extension {
         this.unbindKey('ctile-right');
         this.unbindKey('ctile-up');
         this.unbindKey('ctile-down');
+        this.unbindKey('ctile-switch-monitor');
         this._settings = null;
     }
 
@@ -197,6 +199,19 @@ class Extension {
 
     unbindKey(key) {
         Main.wm.removeKeybinding(key);
+    }
+
+    cycle_monitors() {
+	let activeWindow = this.getActiveWindow();
+        if (!activeWindow) {
+            log('No active window');
+            return;
+        }
+	log("cycle_monitors");
+        const monitor = activeWindow.get_monitor();
+	const count = this.getNumMonitors();
+	const next_monitor = (monitor + 1) % count;
+	activeWindow.move_to_monitor(next_monitor);
     }
 
     tile_direction(deltax, deltay) {

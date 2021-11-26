@@ -21,7 +21,11 @@
         <key name="ctile-down" type="as">
             <default><![CDATA[['<Super>Down']]]></default>
             <summary>Ctile down</summary>
-        </key>
+	</key>
+        <key name="ctile-switch-monitor" type="as">
+            <default><![CDATA[['<Super>Y']]]></default>
+            <summary>Move window to next monitor</summary>
+	</key>
         <key name="hide-tiles" type="as">
             <default><![CDATA[['Escape']]]></default>
             <summary>Hide tiles</summary>

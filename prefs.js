@@ -13,6 +13,7 @@ const KEYBOARD_SHORTCUTS = [
     {id: 'ctile-down', desc: 'Tile down'},
     {id: 'next-monitor', desc: 'Move tiles to next monitor'},
     {id: 'prev-monitor', desc: 'Move tiles to previous monitor'},
+    {id: 'ctile-switch-monitor', desc: 'Move window to next monitor'},
 ];
 
 function init() {
