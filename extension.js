@@ -26,6 +26,85 @@ const Tile = GObject.registerClass(
     }
 );
 
+const getWorkAreaForMonitor = function(monitor) {
+    return global.workspace_manager
+        .get_active_workspace()
+        .get_work_area_for_monitor(monitor);
+}
+
+class WindowState {
+    constructor() {
+	this._windows = {};
+	this._cols = 3;
+	this._rows = 3;
+    }
+    
+    // gnome window
+    _add(window) {
+	const area = window.get_frame_rect();
+	this._windows[window] = {
+		initial: { x: area.x, y: area.y, height: area.height, width: area.width },
+		tiled: {x: null, y: null, height: null, width: null },
+		dimension_cycle: 1,
+		grid: {col: Math.floor(this._cols / 2), row: 1},
+	}
+    }
+
+    get(window_) {
+	let window = null;
+	window = this._windows[window_];
+	if (!window) {
+	    this._add(window_);
+	    window = this._windows[window_];
+	}
+	return window;
+    }
+
+    // gnome window
+    tile(_window, deltax, deltay) {
+        let window = this.get(_window);
+
+	// calc new grid position
+	const col = window.grid.col + deltax;
+	if (0 <= col && col < this._cols) {
+	    window.grid.col = col;
+	} else {
+	    this.cycle_dimension(_window);
+	}
+	const row = window.grid.row + deltay;
+	if (0 <= row && row < this._rows) {
+	    window.grid.row = row;
+	} else {
+	    this.cycle_dimension(_window);
+	}
+
+	//switch (col, row) {
+		//case (0, 1): tile_left(
+    }
+
+    // gnome window
+    cycle_dimension(activeWindow) {
+	let window = this.get(activeWindow);
+        const monitor = activeWindow.get_monitor();
+        const workarea = getWorkAreaForMonitor(monitor);
+	window.dimension_cycle = (window.dimension_cycle + 1) % (this._cols + 1); // cycle [1..max] cols
+	const factor = farey_sequence.farey_indexed(this._cols, window.dimension_cycle);
+	let area = {
+	    x: workarea.x,
+	    y: workarea.y,
+	    width: Math.floor(workarea.width * factor),
+	    height: workarea.height
+	};
+	window.tiled = area;
+	log(window.dimension_cycle);
+	log(factor);
+	log(workarea.x);
+	log(workarea.y);
+	log(workarea.width * factor);
+	log(workarea.height);
+    }
+}
+
 class Extension {
     constructor() {
         this._settings = null;
@@ -35,7 +114,11 @@ class Extension {
         this._tile = null;
         this._date = null;
 
-	this._counter = 1;
+	// tiling state
+	this._dimension_cycle = 1;
+	this._smartx = 1;
+	this._smarty = 1;
+	this._windowState = new WindowState();
     }
 
     enable() {
@@ -59,12 +142,26 @@ class Extension {
         Main.wm.removeKeybinding(key);
     }
 
+    tile_direction(deltax, deltay) {
+	let activeWindow = this.getActiveWindow();
+        if (!activeWindow) {
+            log('No active window');
+            return;
+        }
+	this._windowState.cycle_dimension(activeWindow);
+	let window = this._windowState.get(activeWindow);
+	this.moveWindow(activeWindow, window.tiled);
+    }
+
     doSmth() {
 	let activeWindow = this.getActiveWindow();
         if (!activeWindow) {
             log('No active window');
             return;
         }
+	log("window width: " + activeWindow.get_frame_rect().width);
+	let state = this._windowState.get(activeWindow);
+	log("initial width: " + state.initial.width);
 
         const monitor = activeWindow.get_monitor();
         const workarea = this.getWorkAreaForMonitor(monitor);
@@ -87,7 +184,8 @@ class Extension {
 
     onShowTiles() {
 	log("onShowTiles()");
-	this.doSmth();
+	//this.doSmth();
+	this.tile_direction(-1, 0);
 	return;
         if (this._tiles.length > 0) {
             this.discardTiles();
@@ -143,6 +241,7 @@ class Extension {
             log('No active window');
             return;
         }
+
         this._window = activeWindow;
         this._monitor = monitor != null ? monitor : activeWindow.get_monitor();
 
