@@ -118,16 +118,16 @@ class WindowState {
 	window.dimension_cycle = (window.dimension_cycle + 1) % (this._cols + 1); // cycle [1..max] cols
 	const factor = farey_sequence.farey_indexed(this._cols, window.dimension_cycle);
 
-	//switch (window.grid.x) {
-	    //case 0:
-		//window.tiled.area.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
-	    //case (this._cols - 1 - window.dimension_cycle):
-		//window.tiled.area.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
-
-	window.tiled.area.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
-	window.tiled.area.y = workarea.y,
-	window.tiled.area.width = Math.floor(workarea.width * factor),
-	window.tiled.area.height = workarea.height
+	window.tiled.width = Math.floor(workarea.width * factor);
+	window.tiled.height = workarea.height;
+	log("%s == %s -> %s",window.grid.col, this._cols, (this._cols - 1));
+	if (window.grid.col == (this._cols - 1)) {
+	    window.tiled.x = workarea.x + workarea.width - window.tiled.width;
+	} else {
+	    log("!==");
+	    window.tiled.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
+	}
+	window.tiled.y = workarea.y,
 
 	log("_cycle_dimension");
 	//log(window.dimension_cycle);
