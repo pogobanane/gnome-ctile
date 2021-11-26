@@ -9,6 +9,11 @@ Resources:
 - [gnome js architecture](https://gjs.guide/extensions/overview/architecture.html#mutter): Mutter is responsible for [window APIs](https://gjs-docs.gnome.org/meta3~3.30.2/)
 - [Gtk Window docs](https://docs.gtk.org/gtk4/method.Window.get_focus.html) which allow guesses how the js API might look like
 
+## TODO
+
+- hook mouse move/resize to reset WindowState
+
+
 # Tactile
 
 A window tiling extension for GNOME Shell.

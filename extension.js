@@ -37,6 +37,7 @@ class WindowState {
 	this._windows = {};
 	this._cols = 3;
 	this._rows = 3;
+	this._min_factor = 1 / this._cols;
     }
     
     // gnome window
@@ -99,8 +100,7 @@ class WindowState {
 	let window = this.get(activeWindow);
         const monitor = activeWindow.get_monitor();
         const workarea = getWorkAreaForMonitor(monitor);
-	const min_factor = 1 / this._cols;
-	window.tiled.x = Math.floor(window.grid.col * min_factor * workarea.width);
+	window.tiled.x = workarea.x + Math.floor(window.grid.col * this._min_factor * workarea.width);
 	log("_swish");
 	//log(window.grid.col);
 	//log(window.tiled.x);
@@ -117,13 +117,18 @@ class WindowState {
         const workarea = getWorkAreaForMonitor(monitor);
 	window.dimension_cycle = (window.dimension_cycle + 1) % (this._cols + 1); // cycle [1..max] cols
 	const factor = farey_sequence.farey_indexed(this._cols, window.dimension_cycle);
-	let area = {
-	    x: workarea.x,
-	    y: workarea.y,
-	    width: Math.floor(workarea.width * factor),
-	    height: workarea.height
-	};
-	window.tiled = area;
+
+	//switch (window.grid.x) {
+	    //case 0:
+		//window.tiled.area.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
+	    //case (this._cols - 1 - window.dimension_cycle):
+		//window.tiled.area.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
+
+	window.tiled.area.x = workarea.x + Math.floor(window.grid.col * workarea.width * this._min_factor);
+	window.tiled.area.y = workarea.y,
+	window.tiled.area.width = Math.floor(workarea.width * factor),
+	window.tiled.area.height = workarea.height
+
 	log("_cycle_dimension");
 	//log(window.dimension_cycle);
 	//log(factor);
@@ -131,6 +136,21 @@ class WindowState {
 	//log(workarea.y);
 	//log(workarea.width * factor);
 	//log(workarea.height);
+    }
+
+    shrink_to_workarea(activeWindow) {
+	let window = this.get(activeWindow);
+        const monitor = activeWindow.get_monitor();
+        const workarea = getWorkAreaForMonitor(monitor);
+	window.tiled.x = Math.max(window.tiled.x, workarea.x);
+	window.tiled.y = Math.max(window.tiled.y, workarea.y);
+	if (workarea.x + workarea.width < window.tiled.x + window.tiled.width) {
+	    window.tiled.width = workarea.x + workarea.width - window.tiled.x
+	}
+	if (workarea.y + workarea.height < window.tiled.y + window.tiled.height) {
+	    window.tiled.height = workarea.y + workarea.height - window.tiled.y
+	}
+	
     }
 }
 
@@ -186,9 +206,10 @@ class Extension {
             return;
         }
 	this._windowState.tile(activeWindow, deltax, deltay);
+	this._windowState.print(activeWindow);
+	this._windowState.shrink_to_workarea(activeWindow);
 	let window = this._windowState.get(activeWindow);
 	this.moveWindow(activeWindow, window.tiled);
-	this._windowState.print(activeWindow);
     }
 
     doSmth() {
