@@ -44,10 +44,22 @@ class WindowState {
 	const area = window.get_frame_rect();
 	this._windows[window] = {
 		initial: { x: area.x, y: area.y, height: area.height, width: area.width },
-		tiled: {x: null, y: null, height: null, width: null },
+		tiled: { x: area.x, y: area.y, height: area.height, width: area.width },
 		dimension_cycle: 1,
 		grid: {col: Math.floor(this._cols / 2), row: 1},
 	}
+    }
+
+    // gnome window
+    print(_window) {
+	let window = this.get(_window);
+	log("print(window)");
+	log("monitor " + _window.get_monitor());
+        farey_sequence.dir("workarea ", getWorkAreaForMonitor(_window.get_monitor()).x);
+	farey_sequence.dir("initial ", window.initial);
+	farey_sequence.dir("tiled ", window.tiled);
+	farey_sequence.dir("dimension_cycle ", window.dimension_cycle);
+	farey_sequence.dir("grid ", window.grid);
     }
 
     get(window_) {
@@ -68,18 +80,34 @@ class WindowState {
 	const col = window.grid.col + deltax;
 	if (0 <= col && col < this._cols) {
 	    window.grid.col = col;
+	    this._swishx(_window);
 	} else {
 	    this._cycle_dimension(_window);
 	}
 	const row = window.grid.row + deltay;
 	if (0 <= row && row < this._rows) {
 	    window.grid.row = row;
+	    this._swishy(_window);
 	} else {
 	    this._cycle_dimension(_window);
 	}
 
-	//switch (col, row) {
-		//case (0, 1): tile_left(
+    }
+    
+    // gnome window
+    _swishx(activeWindow) {
+	let window = this.get(activeWindow);
+        const monitor = activeWindow.get_monitor();
+        const workarea = getWorkAreaForMonitor(monitor);
+	const min_factor = 1 / this._cols;
+	window.tiled.x = Math.floor(window.grid.col * min_factor * workarea.width);
+	log("_swish");
+	//log(window.grid.col);
+	//log(window.tiled.x);
+    }
+
+    // gnome window
+    _swishy(activeWindow) {
     }
 
     // gnome window
@@ -96,12 +124,13 @@ class WindowState {
 	    height: workarea.height
 	};
 	window.tiled = area;
-	log(window.dimension_cycle);
-	log(factor);
-	log(workarea.x);
-	log(workarea.y);
-	log(workarea.width * factor);
-	log(workarea.height);
+	log("_cycle_dimension");
+	//log(window.dimension_cycle);
+	//log(factor);
+	//log(workarea.x);
+	//log(workarea.y);
+	//log(workarea.width * factor);
+	//log(workarea.height);
     }
 }
 
@@ -159,6 +188,7 @@ class Extension {
 	this._windowState.tile(activeWindow, deltax, deltay);
 	let window = this._windowState.get(activeWindow);
 	this.moveWindow(activeWindow, window.tiled);
+	this._windowState.print(activeWindow);
     }
 
     doSmth() {

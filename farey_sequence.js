@@ -5,7 +5,7 @@
 // Further reading: https://rosettacode.org/wiki/Farey_sequence#C
 // Farey for n=3: 1/3 1/2 2/3
 var farey_indexed = function(n, index) {
-    log("func(" + n + "," + index + ")");
+    log("farey_indexed(" + n + "," + index + ")");
     //printf("func(%d,%d)\n", n, index);
     //let ret; // float
     
@@ -32,3 +32,8 @@ var farey_indexed = function(n, index) {
     log('');
     return ret;
 }
+
+var dir = function(pre, jsonObj) {
+	log(pre + JSON.stringify(jsonObj));
+}
+
