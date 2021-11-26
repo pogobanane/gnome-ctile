@@ -6,6 +6,22 @@
             <default><![CDATA[['<Super>t']]]></default>
             <summary>Show tiles</summary>
         </key>
+        <key name="ctile-left" type="as">
+            <default><![CDATA[['<Super>Left']]]></default>
+            <summary>Ctile left</summary>
+        </key>
+        <key name="ctile-right" type="as">
+            <default><![CDATA[['<Super>Right']]]></default>
+            <summary>Ctile right</summary>
+        </key>
+        <key name="ctile-up" type="as">
+            <default><![CDATA[['<Super>Up']]]></default>
+            <summary>Ctile up</summary>
+        </key>
+        <key name="ctile-down" type="as">
+            <default><![CDATA[['<Super>Down']]]></default>
+            <summary>Ctile down</summary>
+        </key>
         <key name="hide-tiles" type="as">
             <default><![CDATA[['Escape']]]></default>
             <summary>Hide tiles</summary>

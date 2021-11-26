@@ -69,13 +69,13 @@ class WindowState {
 	if (0 <= col && col < this._cols) {
 	    window.grid.col = col;
 	} else {
-	    this.cycle_dimension(_window);
+	    this._cycle_dimension(_window);
 	}
 	const row = window.grid.row + deltay;
 	if (0 <= row && row < this._rows) {
 	    window.grid.row = row;
 	} else {
-	    this.cycle_dimension(_window);
+	    this._cycle_dimension(_window);
 	}
 
 	//switch (col, row) {
@@ -83,7 +83,7 @@ class WindowState {
     }
 
     // gnome window
-    cycle_dimension(activeWindow) {
+    _cycle_dimension(activeWindow) {
 	let window = this.get(activeWindow);
         const monitor = activeWindow.get_monitor();
         const workarea = getWorkAreaForMonitor(monitor);
@@ -124,6 +124,10 @@ class Extension {
     enable() {
         this._settings = ExtensionUtils.getSettings();
         this.bindKey('show-tiles', () => this.onShowTiles());
+        this.bindKey('ctile-left', () => this.tile_direction(-1, 0));
+        this.bindKey('ctile-right', () => this.tile_direction(1, 0));
+        this.bindKey('ctile-up', () => this.tile_direction(0, 1));
+        this.bindKey('ctile-down', () => this.tile_direction(0, -1));
     }
 
     disable() {
@@ -131,6 +135,10 @@ class Extension {
         this.onHideTiles();
 
         this.unbindKey('show-tiles');
+        this.unbindKey('ctile-left');
+        this.unbindKey('ctile-right');
+        this.unbindKey('ctile-up');
+        this.unbindKey('ctile-down');
         this._settings = null;
     }
 
@@ -148,7 +156,7 @@ class Extension {
             log('No active window');
             return;
         }
-	this._windowState.cycle_dimension(activeWindow);
+	this._windowState.tile(activeWindow, deltax, deltay);
 	let window = this._windowState.get(activeWindow);
 	this.moveWindow(activeWindow, window.tiled);
     }
