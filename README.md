@@ -1,6 +1,9 @@
 # ctile
 
-Forked from [lundal/tactile](https://gitlab.com/lundal/tactile) but adapts the tiling to act as [pogobanane/xfce-ctile](https://gitlab.com/pogobanane/xfce-ctile).
+Window tiling with <Super>+ArrowKeys on monitors of all sizes for GNOME Shell.
+Tile windows using <Super> + Arrow Keys. Repeated commands refine the tiling and <Super>+Enter moves to another monitor.
+
+State: Usable as in "does not crash". The algorithm and settings need refinement though.
 
 ## Developers
 
@@ -12,8 +15,8 @@ Resources:
 Development with `nix` package manager:
 
 - build into `./result` with `nix build .#ctile`
-- symlink `~/.local/share/gnome-shell/extensions/ctile@lundal.io -> $(pwd)/result/share/gnome-shell/extensions/ctile@lundial.io`
-- only once: Enable extension via cmdline `gnome-extensions enable ctile@lundal.io`
+- symlink `ln -s $(pwd)/result/share/gnome-shell/extensions/ctile@pogobanane.de ~/.local/share/gnome-shell/extensions/`
+- only once: Enable extension via cmdline `gnome-extensions enable ctile@pogobanane.de`
 - Start nested gnome session for testing: `dbus-run-session -- gnome-shell --nested --wayland`
 - Test on main session: 
   - log out and in (to load new extension version)
@@ -25,6 +28,8 @@ Development with `nix` package manager:
 
 
 # Tactile
+
+Ctile was forked from [lundal/tactile](https://gitlab.com/lundal/tactile) but adapts the tiling to act as [pogobanane/xfce-ctile](https://gitlab.com/pogobanane/xfce-ctile).
 
 A window tiling extension for GNOME Shell.
 
