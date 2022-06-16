@@ -2,10 +2,6 @@
 <schemalist>
     <schema id="org.gnome.shell.extensions.ctile" path="/org/gnome/shell/extensions/ctile/">
         <!-- Show/hide -->
-        <key name="show-tiles" type="as">
-            <default><![CDATA[['<Super>t']]]></default>
-            <summary>Show tiles</summary>
-        </key>
         <key name="ctile-left" type="as">
             <default><![CDATA[['<Super>Left']]]></default>
             <summary>Ctile left</summary>
@@ -21,103 +17,10 @@
         <key name="ctile-down" type="as">
             <default><![CDATA[['<Super>Down']]]></default>
             <summary>Ctile down</summary>
-	</key>
+	      </key>
         <key name="ctile-switch-monitor" type="as">
             <default><![CDATA[['<Super>Enter']]]></default>
             <summary>Move window to next monitor</summary>
-	</key>
-        <key name="hide-tiles" type="as">
-            <default><![CDATA[['Escape']]]></default>
-            <summary>Hide tiles</summary>
-        </key>
-        <key name="next-monitor" type="as">
-            <default><![CDATA[['space']]]></default>
-            <summary>Move tiles to next monitor</summary>
-        </key>
-        <key name="prev-monitor" type="as">
-            <default><![CDATA[['<Shift>space']]]></default>
-            <summary>Move tiles to previous monitor</summary>
-        </key>
-        <!-- Top row -->
-        <key name="tile-0-0" type="as">
-            <default><![CDATA[['q']]]></default>
-            <summary>Tile 0:0</summary>
-        </key>
-        <key name="tile-1-0" type="as">
-            <default><![CDATA[['w']]]></default>
-            <summary>Tile 1:0</summary>
-        </key>
-        <key name="tile-2-0" type="as">
-            <default><![CDATA[['e']]]></default>
-            <summary>Tile 2:0</summary>
-        </key>
-        <key name="tile-3-0" type="as">
-            <default><![CDATA[['r']]]></default>
-            <summary>Tile 3:0</summary>
-        </key>
-        <!-- Middle row -->
-        <key name="tile-0-1" type="as">
-            <default><![CDATA[['a']]]></default>
-            <summary>Tile 0:1</summary>
-        </key>
-        <key name="tile-1-1" type="as">
-            <default><![CDATA[['s']]]></default>
-            <summary>Tile 1:1</summary>
-        </key>
-        <key name="tile-2-1" type="as">
-            <default><![CDATA[['d']]]></default>
-            <summary>Tile 2:1</summary>
-        </key>
-        <key name="tile-3-1" type="as">
-            <default><![CDATA[['f']]]></default>
-            <summary>Tile 3:1</summary>
-        </key>
-        <!-- Bottom row -->
-        <key name="tile-0-2" type="as">
-            <default><![CDATA[['z']]]></default>
-            <summary>Tile 0:2</summary>
-        </key>
-        <key name="tile-1-2" type="as">
-            <default><![CDATA[['x']]]></default>
-            <summary>Tile 1:2</summary>
-        </key>
-        <key name="tile-2-2" type="as">
-            <default><![CDATA[['c']]]></default>
-            <summary>Tile 2:2</summary>
-        </key>
-        <key name="tile-3-2" type="as">
-            <default><![CDATA[['v']]]></default>
-            <summary>Tile 3:2</summary>
-        </key>
-        <!-- Column weights -->
-        <key name="col-0" type="i">
-            <default>1</default>
-            <summary>Column 0</summary>
-        </key>
-        <key name="col-1" type="i">
-            <default>1</default>
-            <summary>Column 1</summary>
-        </key>
-        <key name="col-2" type="i">
-            <default>1</default>
-            <summary>Column 2</summary>
-        </key>
-        <key name="col-3" type="i">
-            <default>1</default>
-            <summary>Column 3</summary>
-        </key>
-        <!-- Row weights -->
-        <key name="row-0" type="i">
-            <default>1</default>
-            <summary>Row 0</summary>
-        </key>
-        <key name="row-1" type="i">
-            <default>1</default>
-            <summary>Row 1</summary>
-        </key>
-        <key name="row-2" type="i">
-            <default>0</default>
-            <summary>Row 2</summary>
-        </key>
+	      </key>
     </schema>
 </schemalist>

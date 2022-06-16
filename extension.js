@@ -172,10 +172,9 @@ class Extension {
 
     enable() {
         this._settings = ExtensionUtils.getSettings();
-        this.bindKey('show-tiles', () => this.onShowTiles());
         this.bindKey('ctile-left', () => this.tile_direction(-1, 0));
         this.bindKey('ctile-right', () => this.tile_direction(1, 0));
-	this.bindKey('ctile-up', () => this.tile_direction(0, 1));
+	      this.bindKey('ctile-up', () => this.tile_direction(0, 1));
         this.bindKey('ctile-down', () => this.tile_direction(0, -1));
         this.bindKey('ctile-switch-monitor', () => this.cycle_monitors());
     }
@@ -184,7 +183,6 @@ class Extension {
         // In case the extension is disabled while tiles are shown
         this.onHideTiles();
 
-        this.unbindKey('show-tiles');
         this.unbindKey('ctile-left');
         this.unbindKey('ctile-right');
         this.unbindKey('ctile-up');

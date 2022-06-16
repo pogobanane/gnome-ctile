@@ -5,14 +5,10 @@ const COLUMN_KEY = 0;
 const COLUMN_MODS = 1;
 
 const KEYBOARD_SHORTCUTS = [
-    {id: 'show-tiles', desc: 'Show tiles'},
-    {id: 'hide-tiles', desc: 'Hide tiles'},
     {id: 'ctile-left', desc: 'Tile left'},
     {id: 'ctile-right', desc: 'Tile right'},
     {id: 'ctile-up', desc: 'Tile up'},
     {id: 'ctile-down', desc: 'Tile down'},
-    {id: 'next-monitor', desc: 'Move tiles to next monitor'},
-    {id: 'prev-monitor', desc: 'Move tiles to previous monitor'},
     {id: 'ctile-switch-monitor', desc: 'Move window to next monitor'},
 ];
 
@@ -33,15 +29,15 @@ function buildPrefsWidget() {
         visible: true
     });
 
-    const tileConfigLabel = new Gtk.Label({
-        label: '<b>Tile configuration</b>',
-        use_markup: true,
-        visible: true
-    });
-    grid.attach(tileConfigLabel, 0, 0, 1, 1);
+    //const tileConfigLabel = new Gtk.Label({
+        //label: '<b>Tile configuration</b>',
+        //use_markup: true,
+        //visible: true
+    //});
+    //grid.attach(tileConfigLabel, 0, 0, 1, 1);
 
-    const tileConfigWidget = buildTileConfigWidget(settings, allTreeViews);
-    grid.attach(tileConfigWidget, 0, 1, 1, 1);
+    //const tileConfigWidget = buildTileConfigWidget(settings, allTreeViews);
+    //grid.attach(tileConfigWidget, 0, 1, 1, 1);
 
     const keyboardShortcutsLabel = new Gtk.Label({
         label: '<b>Keyboard shortcuts</b>',
@@ -56,36 +52,36 @@ function buildPrefsWidget() {
     return grid;
 }
 
-function buildTileConfigWidget(settings, allTreeViews) {
-    const grid = new Gtk.Grid({
-        halign: Gtk.Align.CENTER,
-        column_spacing: 12,
-        row_spacing: 12,
-        visible: true
-    });
-
-    // Col weights
-    for (let col = 0; col < 4; col++) {
-        const widget = buildNumberWidget(settings, `col-${col}`)
-        grid.attach(widget, col + 1, 0, 1, 1);
-    }
-
-    // Row weights
-    for (let row = 0; row < 3; row++) {
-        const widget = buildNumberWidget(settings, `row-${row}`)
-        grid.attach(widget, 0, row + 1, 1, 1);
-    }
-
-    // Tile hotkeys
-    for (let col = 0; col < 4; col++) {
-        for (let row = 0; row < 3; row++) {
-            const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`, 124, 34, allTreeViews);
-            grid.attach(widget, col + 1, row + 1, 1, 1);
-        }
-    }
-
-    return grid;
-}
+// function buildTileConfigWidget(settings, allTreeViews) {
+//     const grid = new Gtk.Grid({
+//         halign: Gtk.Align.CENTER,
+//         column_spacing: 12,
+//         row_spacing: 12,
+//         visible: true
+//     });
+// 
+//     // Col weights
+//     for (let col = 0; col < 4; col++) {
+//         const widget = buildNumberWidget(settings, `col-${col}`)
+//         grid.attach(widget, col + 1, 0, 1, 1);
+//     }
+// 
+//     // Row weights
+//     for (let row = 0; row < 3; row++) {
+//         const widget = buildNumberWidget(settings, `row-${row}`)
+//         grid.attach(widget, 0, row + 1, 1, 1);
+//     }
+// 
+//     // Tile hotkeys
+//     for (let col = 0; col < 4; col++) {
+//         for (let row = 0; row < 3; row++) {
+//             const widget = buildAcceleratorWidget(settings, `tile-${col}-${row}`, 124, 34, allTreeViews);
+//             grid.attach(widget, col + 1, row + 1, 1, 1);
+//         }
+//     }
+// 
+//     return grid;
+// }
 
 function buildKeyboardShortcutsWidget(settings, allTreeViews) {
     const grid = new Gtk.Grid({
@@ -110,18 +106,18 @@ function buildKeyboardShortcutsWidget(settings, allTreeViews) {
     return grid;
 }
 
-function buildNumberWidget(settings, id) {
-    const spin = new Gtk.SpinButton({
-        adjustment: new Gtk.Adjustment({
-            lower: 0,
-            upper: 1000,
-            step_increment: 1
-        }),
-        visible: true
-    });
-    settings.bind(id, spin, 'value', Gio.SettingsBindFlags.DEFAULT);
-    return spin;
-}
+//function buildNumberWidget(settings, id) {
+    //const spin = new Gtk.SpinButton({
+        //adjustment: new Gtk.Adjustment({
+            //lower: 0,
+            //upper: 1000,
+            //step_increment: 1
+        //}),
+        //visible: true
+    //});
+    //settings.bind(id, spin, 'value', Gio.SettingsBindFlags.DEFAULT);
+    //return spin;
+//}
 
 // The only widget for capturing accelerators is CellRendererAccel
 // It must be embedded in a TreeView, which adds a lot of complexity
