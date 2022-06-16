@@ -23,7 +23,7 @@
             <summary>Ctile down</summary>
 	</key>
         <key name="ctile-switch-monitor" type="as">
-            <default><![CDATA[['<Super>Y']]]></default>
+            <default><![CDATA[['<Super>Enter']]]></default>
             <summary>Move window to next monitor</summary>
 	</key>
         <key name="hide-tiles" type="as">
