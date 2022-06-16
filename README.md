@@ -9,6 +9,16 @@ Resources:
 - [gnome js architecture](https://gjs.guide/extensions/overview/architecture.html#mutter): Mutter is responsible for [window APIs](https://gjs-docs.gnome.org/meta3~3.30.2/)
 - [Gtk Window docs](https://docs.gtk.org/gtk4/method.Window.get_focus.html) which allow guesses how the js API might look like
 
+Development with `nix` package manager:
+
+- build into `./result` with `nix build .#ctile`
+- symlink `~/.local/share/gnome-shell/extensions/ctile@lundal.io -> $(pwd)/result/share/gnome-shell/extensions/ctile@lundial.io`
+- only once: Enable extension via cmdline `gnome-extensions enable ctile@lundal.io`
+- Start nested gnome session for testing: `dbus-run-session -- gnome-shell --nested --wayland`
+- Test on main session: 
+  - log out and in (to load new extension version)
+  - output at: `journalctl -f -o cat /usr/bin/gnome-shell`
+
 ## TODO
 
 - hook mouse move/resize to reset WindowState
