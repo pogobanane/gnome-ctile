@@ -1,12 +1,12 @@
 .PHONY: build clean test-wayland follow-log
 
-zip = ctile@lundal.io.zip
+zip = ctile@pogobanane.de.zip
 schema = schemas/gschemas.compiled
 
 build: $(zip)
 
 install: $(zip)
-	unzip -o $(zip) -d ~/.local/share/gnome-shell/extensions/ctile@lundal.io/
+	unzip -o $(zip) -d ~/.local/share/gnome-shell/extensions/ctile@pogobanane.de/
 
 clean:
 	rm -f $(zip) $(schema)

@@ -1,5 +1,4 @@
 { stdenv, lib, fetchFromGitHub, glib, gnome, zip, unzip }:
-# install this locally: ln -s ~/dev/tiling/gnome-ctile/result/share/gnome-shell/extensions/ctile@lundal.io ~/.local/share/gnome-shell/extensions/ctile@lundal.io
 
 stdenv.mkDerivation rec {
   pname = "gnome-shell-extension-ctile";
@@ -24,22 +23,22 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     runHook preInstall
-    mkdir -p "$out/share/gnome-shell/extensions/ctile@lundal.io"
-    unzip -o "ctile@lundal.io.zip" -d "$out/share/gnome-shell/extensions/ctile@lundal.io/"
+    mkdir -p "$out/share/gnome-shell/extensions/ctile@pogobanane.de"
+    unzip -o "ctile@pogobanane.de.zip" -d "$out/share/gnome-shell/extensions/ctile@pogobanane.de/"
     #cp -r "/homeless-shelter/.local/share/gnome-shell/extensions/ctile@lundal.io" "$out/share/gnome-shell/extensions/ctile@lundal.io/"
     runHook postInstall
   '';
 
   passthru = {
-    extensionUuid = "ctile@lundal.io";
+    extensionUuid = "ctile@pogobanane.de";
     extensionPortalSlug = "ctile";
   };
 
   meta = with lib; {
-    description = "Tiling window management for GNOME Shell";
-    license = licenses.gpl2;
-    maintainers = with maintainers; [ benley ];
-    homepage = "https://github.com/rliang/gnome-shell-extension-tilingnome";
+    description = "Window tiling with <Super>+ArrowKeys on monitors of all sizes for GNOME Shell";
+    license = licenses.gpl3;
+    maintainers = with maintainers; [ okelmann ];
+    homepage = "https://gitlab.com/pogobanane/gnome-ctile";
     platforms = gnome.gnome-shell.meta.platforms;
   };
 }
