@@ -4,7 +4,7 @@
   "description": "Tile windows using <Super> + Arrow Keys. Repeated commands refine the tiling and <Super>+Enter moves to another monitor.",
   "url": "https://gitlab.com/pogobanane/gnome-ctile",
   "settings-schema": "org.gnome.shell.extensions.ctile",
-  "version": 8,
+  "version": 9,
   "shell-version": [
     "42",
     "41",
